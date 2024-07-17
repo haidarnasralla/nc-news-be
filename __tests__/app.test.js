@@ -1,6 +1,6 @@
 const request = require('supertest')
 const app = require('../app.js')
-const db = require('../db/connection') // can also be called index.js
+const db = require('../db/connection')
 const testData = require('../db/data/test-data')
 const seed = require('../db/seeds/seed')
 const endpoints = require('../endpoints.json')
@@ -34,3 +34,25 @@ describe('GET /api', () => {
         })
       })
   })
+
+describe('GET /api/articles/:article_id', () => {
+  it('200: /api/articles/:article_id responds with correct article when given valid article ID', () => {
+    return request(app)
+      .get('/api/articles/1')
+      .expect(200)
+      .then((response) => {
+        const article = response.body
+        expect(article).toEqual({
+          article_id: 1;
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: 1594329060000,
+          votes: 100,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",      
+        })
+      })
+    })
+})
