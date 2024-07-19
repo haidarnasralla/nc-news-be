@@ -1,6 +1,4 @@
-const { fetchArticleById } = require('../models/articles-models')
-const { fetchArticles } = require('../models/articles-models')
-const { fetchArticleComments } = require('../models/articles-models')
+const { fetchArticleById, fetchArticles, fetchArticleComments, insertArticleComments } = require('../models/articles-models')
 
 const getArticleById = (req, res, next) => {
     const { article_id } = req.params
@@ -20,6 +18,8 @@ const getArticles = (req, res, next) => {
     })
 }
 
+// REVISE LATER
+
 const getArticleComments = (req, res, next) => {
     let { order, limit, p } = req.query
     const article_id = Number(req.params.article_id)
@@ -36,4 +36,18 @@ const getArticleComments = (req, res, next) => {
       })
 }
 
-module.exports = { getArticleById, getArticles, getArticleComments }
+const postArticleComments = (req, res, next) => {
+
+  const { article_id } = req.params
+
+  const { author, body } = req.body
+
+  // I'll find a way of creating an error handling module over the weekend
+  
+  return insertArticleComments(article_id, author, body)
+  .then((comments) => {
+    res.status(201).send({ comments })})
+  .catch(next)
+  }
+
+module.exports = { getArticleById, getArticles, getArticleComments, postArticleComments }
