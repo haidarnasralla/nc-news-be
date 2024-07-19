@@ -6,7 +6,7 @@ const fetchArticleById = (article_id) => {
         if (res.rows.length === 0){
             return Promise.reject({
                 status: 404,
-                msg: '404 - not found :('
+                msg: 'not found :('
             })
         }
         return res.rows[0]
@@ -38,6 +38,21 @@ const fetchArticles = () => {
     })
 }
 
-// Note to self - multi line strings always need backticks (``)
+const fetchArticleComments = (article_id, order = 'DESC', limit = 10, p = 1) => {
+    return db
+      .query('SELECT * FROM articles WHERE article_id = $1', [article_id])
+      .then(({ rows }) => {
+        if (!rows[0]) return Promise.reject({ status: 404, msg: 'not found :(' });
+        const offset = (p - 1) * limit;
+        const articleCommentsQueryString = `
+        SELECT * FROM comments WHERE article_id = $1 
+        ORDER BY created_at ${order}
+        LIMIT $2 OFFSET $3;`  
+        return db.query(articleCommentsQueryString, [article_id, limit, offset]);
+      })
+      .then(({ rows }) => {
+        return rows;
+      });
+  }
 
-module.exports = { fetchArticleById, fetchArticles }
+module.exports = { fetchArticleById, fetchArticles, fetchArticleComments }

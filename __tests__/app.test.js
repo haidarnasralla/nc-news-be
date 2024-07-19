@@ -48,7 +48,7 @@ describe('GET /api/articles/:article_id', () => {
           topic: "mitch",
           author: "butter_bridge",
           body: "I find this existence challenging",
-          created_at: "2020-07-09T20:11:00.000Z", // converted to date format, lifted from error msg
+          created_at: "2020-07-09T20:11:00.000Z", // Original was a UNIX timestamp!
           votes: 100,
           article_img_url:
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",      
@@ -60,7 +60,7 @@ describe('GET /api/articles/:article_id', () => {
     .get('/api/articles/99999')
     .expect(404)
     .then(({ body }) => {
-      expect(body.msg).toBe('404 - not found :(')
+      expect(body.msg).toBe('not found :(')
     })
   })
   it('400: Responds with bad request for invalid article_id', () => {
@@ -68,7 +68,7 @@ describe('GET /api/articles/:article_id', () => {
      .get('/api/articles/SPAMSPAMSPAM')
      .expect(400)
      .then(({ body }) => {
-       expect(body.msg).toBe('400 - bad request >:(')
+       expect(body.msg).toBe('bad request >:(')
      })
   }) 
 })
@@ -112,6 +112,53 @@ describe('GET /api/articles', () => {
         articles.forEach((article) => {
           expect(article).not.toHaveProperty('body')
         })
+      })
+  })
+})
+
+describe('GET /api/articles/:article_id/comments', () => {
+  it('200: Returns array of comments for an article with valid id', () => {
+      return request(app)
+      .get('/api/articles/1/comments')
+      .expect(200)
+      .then((response) => {
+          const comments = response.body.comments;
+          comments.forEach((comment) => {
+              expect(comment).toMatchObject({
+                  comment_id: expect.any(Number),
+                  votes: expect.any(Number),
+                  created_at: expect.any(String),
+                  author: expect.any(String),
+                  body: expect.any(String),
+                  article_id: expect.any(Number)
+              })
+          })
+      })
+  })
+  it('200: Returns array ordered by most recent', () => {
+      return request(app)
+      .get('/api/articles/1/comments')
+      .expect(200)
+      .then((response) => {
+          const comments = response.body.comments;
+          expect(comments).toBeSortedBy('created_at', {descending: true})
+      })
+  })
+  it('400 - Invalid article_id', () => {
+      return request(app)
+      .get('/api/articles/twenty/comments')
+      .expect(400)
+      .then((response) => {
+          const msg = response.body.msg
+          expect(msg).toBe('bad request >:(')
+      })
+  })
+  it('404 - Valid article_id, nonexistent article', () => {
+      return request(app)
+      .get('/api/articles/99/comments')
+      .then((response) => {
+          const msg = response.body.msg;
+          expect(msg).toBe('not found :(')
       })
   })
 })
