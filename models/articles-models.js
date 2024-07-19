@@ -38,6 +38,8 @@ const fetchArticles = () => {
     })
 }
 
+// REVISE LATER
+
 const fetchArticleComments = (article_id, order = 'DESC', limit = 10, p = 1) => {
     return db
       .query('SELECT * FROM articles WHERE article_id = $1', [article_id])
@@ -55,4 +57,16 @@ const fetchArticleComments = (article_id, order = 'DESC', limit = 10, p = 1) => 
       });
   }
 
-module.exports = { fetchArticleById, fetchArticles, fetchArticleComments }
+
+
+const insertArticleComments =  (article_id, author, body) => {
+
+    if (author === undefined || body === undefined) {
+        return Promise.reject({ status: 400, msg: 'bad request >:(' })
+      }
+
+    return db.query(`INSERT INTO comments (author, body, article_id) VALUES ($1,$2,$3) RETURNING *;`, [author, body, article_id])
+    .then(({ rows }) =>  rows[0])
+    }
+
+module.exports = { fetchArticleById, fetchArticles, fetchArticleComments, insertArticleComments }
