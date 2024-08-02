@@ -6,16 +6,53 @@ exports.fetchTopics = () => {
   });
 };
 
-exports.fetchArticleById = (article_id) => {
-  return db
-    .query("SELECT * FROM articles WHERE article_id = $1", [article_id])
-    .then((res) => {
-      if (res.rows.length === 0) {
-        return Promise.reject({ status: 404, msg: "not found :(" });
+// exports.fetchArticleById = (article_id) => {
+//   return db
+//     .query("SELECT * FROM articles WHERE article_id = $1", [article_id])
+//     .then((res) => {
+//       if (res.rows.length === 0) {
+//         return Promise.reject({ status: 404, msg: "not found :(" });
+//       }
+//       return res.rows[0];
+//     });
+// };
+
+exports.fetchArticleById = (article_id, numComments) => {
+
+  let sqlString = `SELECT
+          articles.author,
+          articles.title,
+          articles.article_id,
+          articles.topic,
+          articles.body,
+          articles.created_at,
+          articles.votes,
+          articles.article_img_url, `
+
+  sqlString += `COUNT(comments.article_id) AS comment_count `
+
+  sqlString += `FROM articles `
+  
+  sqlString += `LEFT JOIN comments 
+          ON comments.article_id = articles.article_id `
+
+  sqlString += `WHERE articles.article_id=$1 `
+
+  sqlString += `GROUP BY articles.article_id;`
+
+  return db.query(sqlString, [article_id]).then(({rows})=> {
+      if(rows.length === 0){
+          return Promise.reject({
+              status : 404,
+              msg : `not found :(`
+          })
       }
-      return res.rows[0];
-    });
-};
+      rows.forEach((article) => {
+          article.comment_count = Number(article.comment_count)
+      })
+      return rows[0]
+  })
+}
 
 exports.fetchArticles = (topic, sort_by = "created_at", order = "desc") => {
   const validSortByColumns = [

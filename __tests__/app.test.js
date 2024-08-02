@@ -58,6 +58,7 @@ describe("CORE: GET /api/articles/:article_id", () => {
           created_at: expect.any(String),
           votes: expect.any(Number),
           article_img_url: expect.any(String),
+          comment_count: expect.any(Number) // Added for Ticket 13
         });
       });
   });
@@ -380,34 +381,34 @@ describe("CORE: SORTING/ORDER FEATURE - GET /api/articles", () => {
   });
  })
 
- describe('CORE: TOPIC QUERY - GET /api/articles', () => {
+ // CORE: TOPIC QUERY - GET /api/articles
 
-it("200: Responds with an array of articles filtered by topic", () => {
-  return request(app)
-    .get("/api/articles?topic=mitch")
-    .expect(200)
-    .then(({ body }) => {
-      expect(body.articles.length).toBe(12);
-      body.articles.forEach((article) => {
-        expect(article.topic).toBe("mitch");
+describe('CORE: TOPIC QUERY - GET /api/articles', () => {
+  it("200: Responds with an array of articles filtered by topic", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(12);
+        body.articles.forEach((article) => {
+          expect(article.topic).toBe("mitch");
+        });
       });
-    });
-});
-
-it("400: Responds with error when topic invalid", () => {
-  return request(app)
-    .get("/api/articles?topic=9999")
-    .expect(400)
-    .then(({ body }) => {
-      expect(body.msg).toBe("bad request >:(");
-    });
-});
-it("404: Valid, but non existent topic", () => {
-  return request(app)
-    .get("/api/articles?topic=dogs")
-    .expect(404)
-    .then(({ body }) => {
-      expect(body.msg).toBe("not found :(");
-    });
-});
+  });
+  it("400: Responds with error when topic invalid", () => {
+    return request(app)
+      .get("/api/articles?topic=9999")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request >:(");
+      });
+  });
+  it("404: Valid, but non existent topic", () => {
+    return request(app)
+      .get("/api/articles?topic=dogs")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("not found :(");
+      });
+  });
 })
