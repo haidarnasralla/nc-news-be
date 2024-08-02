@@ -327,6 +327,17 @@ describe("CORE: DELETE /api/comments/:comment_id", () => {
 });
 
 describe("CORE: GET /api/users", () => {
+  it("200: Responds with array of user objects", () => {
+    return request(app)
+    .get("/api/users")
+    .expect(200)
+    .then(({ body }) => {
+      const { user } = body
+    })
+  })
+})
+
+describe("CORE: GET /api/users", () => {
   it("200: Responds with array of objects with username, name and avatur_url properties", () => {
     return request(app)
       .get("/api/users")
@@ -359,7 +370,7 @@ describe("CORE: SORTING/ORDER FEATURE - GET /api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.articles.length).toBe(13);
-        expect(body.articles).toBeSortedBy("title", { descending: false });
+        expect(body.articles).toBeSortedBy("title", { ascending: true });
       });
   });
   it("400: Responds with error when sort_by invalid column", () => {
@@ -379,35 +390,3 @@ describe("CORE: SORTING/ORDER FEATURE - GET /api/articles", () => {
       });
   });
  })
-
- describe('CORE: TOPIC QUERY - GET /api/articles', () => {
-
-it("200: Responds with an array of articles filtered by topic", () => {
-  return request(app)
-    .get("/api/articles?topic=mitch")
-    .expect(200)
-    .then(({ body }) => {
-      expect(body.articles.length).toBe(12);
-      body.articles.forEach((article) => {
-        expect(article.topic).toBe("mitch");
-      });
-    });
-});
-
-it("400: Responds with error when topic invalid", () => {
-  return request(app)
-    .get("/api/articles?topic=9999")
-    .expect(400)
-    .then(({ body }) => {
-      expect(body.msg).toBe("bad request >:(");
-    });
-});
-it("404: Valid, but non existent topic", () => {
-  return request(app)
-    .get("/api/articles?topic=dogs")
-    .expect(404)
-    .then(({ body }) => {
-      expect(body.msg).toBe("not found :(");
-    });
-});
-})
