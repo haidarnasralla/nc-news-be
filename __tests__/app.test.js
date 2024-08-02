@@ -58,7 +58,7 @@ describe("CORE: GET /api/articles/:article_id", () => {
           created_at: expect.any(String),
           votes: expect.any(Number),
           article_img_url: expect.any(String),
-          comment_count: expect.any(Number) // Added for Ticket 13
+          comment_count: expect.any(Number)
         });
       });
   });
