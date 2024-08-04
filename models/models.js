@@ -7,41 +7,37 @@ exports.fetchTopics = () => {
 };
 
 exports.fetchArticleById = (article_id) => {
-
   let sqlString = `SELECT
-          articles.author,
-          articles.title,
-          articles.article_id,
-          articles.topic,
-          articles.body,
-          articles.created_at,
-          articles.votes,
-          articles.article_img_url, `
+                      articles.author,
+                      articles.title,
+                      articles.article_id,
+                      articles.topic,
+                      articles.body,
+                      articles.created_at,
+                      articles.votes,
+                      articles.article_img_url,
+                      COUNT(comments.article_id) AS comment_count
+                  FROM 
+                      articles
+                  LEFT JOIN 
+                      comments ON comments.article_id = articles.article_id
+                  WHERE articles.article_id = $1
+                  GROUP BY articles.article_id;
+                `;
 
-  sqlString += `COUNT(comments.article_id) AS comment_count `
-
-  sqlString += `FROM articles `
-  
-  sqlString += `LEFT JOIN comments 
-          ON comments.article_id = articles.article_id `
-
-  sqlString += `WHERE articles.article_id=$1 `
-
-  sqlString += `GROUP BY articles.article_id;`
-
-  return db.query(sqlString, [article_id]).then(({rows})=> {
-      if(rows.length === 0){
-          return Promise.reject({
-              status : 404,
-              msg : `not found :(`
-          })
-      }
-      rows.forEach((article) => {
-          article.comment_count = Number(article.comment_count)
-      })
-      return rows[0]
-  })
-}
+  return db.query(sqlString, [article_id]).then(({ rows }) => {
+    if (rows.length === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: `not found :(`,
+      });
+    }
+    rows.forEach((article) => {
+      article.comment_count = Number(article.comment_count);
+    });
+    return rows[0];
+  });
+};
 
 exports.fetchArticles = (topic, sort_by = "created_at", order = "desc") => {
   const validSortByColumns = [
@@ -56,20 +52,23 @@ exports.fetchArticles = (topic, sort_by = "created_at", order = "desc") => {
 
   const validOrders = ["asc", "desc"];
 
-  const validTopic = /^[a-zA-Z]+$/
+  const validTopic = /^[a-zA-Z]+$/;
 
-  if (!validOrders.includes(order) || !validSortByColumns.includes(sort_by) || !validTopic.test(topic)) {
+  if (
+    !validOrders.includes(order) ||
+    !validSortByColumns.includes(sort_by) ||
+    !validTopic.test(topic)
+  ) {
     return Promise.reject({ status: 400, msg: "bad request >:(" });
   }
 
-  return db.query('SELECT slug FROM topics')
-    .then((result) => {
-      const validTopics = result.rows.map(row => row.slug);
-      if (topic && !validTopics.includes(topic)) {
-        return Promise.reject({ status: 404, msg: "not found :(" });
-      }
+  return db.query("SELECT slug FROM topics").then((result) => {
+    const validTopics = result.rows.map((row) => row.slug);
+    if (topic && !validTopics.includes(topic)) {
+      return Promise.reject({ status: 404, msg: "not found :(" });
+    }
 
-      let sqlString = `
+    let sqlString = `
         SELECT
             articles.author, 
             articles.title,
@@ -84,23 +83,23 @@ exports.fetchArticles = (topic, sort_by = "created_at", order = "desc") => {
         LEFT JOIN
             comments ON articles.article_id = comments.article_id
       `;
-      
-      const queryAllTopics = [];
 
-      if (topic) {
-        sqlString += `WHERE topic = $1 `;
-        queryAllTopics.push(topic);
-      }
+    const queryAllTopics = [];
 
-      sqlString += `GROUP BY articles.article_id ORDER BY articles.${sort_by} ${order}`;
+    if (topic) {
+      sqlString += `WHERE topic = $1 `;
+      queryAllTopics.push(topic);
+    }
 
-      return db.query(sqlString, queryAllTopics).then((result) => {
-        result.rows.forEach((article) => {
-          article.comment_count = Number(article.comment_count);
-        });
-        return result.rows;
+    sqlString += `GROUP BY articles.article_id ORDER BY articles.${sort_by} ${order}`;
+
+    return db.query(sqlString, queryAllTopics).then((result) => {
+      result.rows.forEach((article) => {
+        article.comment_count = Number(article.comment_count);
       });
+      return result.rows;
     });
+  });
 };
 
 exports.fetchCommentByArticleId = (article_id) => {
