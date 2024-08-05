@@ -1,3 +1,4 @@
+const cors = require('cors');
 const express = require("express");
 const app = express();
 const {
@@ -23,6 +24,8 @@ app.post("/api/articles/:article_id/comments", postCommentByArticleId);
 app.patch("/api/articles/:article_id", updateArticleVotes);
 app.delete("/api/comments/:comment_id", deleteCommentByCommentId);
 app.get("/api/users", getUsers)
+
+app.use(cors());
 
 app.use((err, req, res, next) => {
   if (err.code === "22P02" || err.code === "23502") {
