@@ -13,7 +13,7 @@ It's a demonstration of a RESTful backend API, built using Express, Node.js and 
 
 * Clone the repository: `git clone https://github.com/haidarnasralla/nc-news-be`
 * Make sure you are inside the correct directory (`../nc-news-be`) and run `npm install` to install dependencies.
-* Check that `.gitignore` ignores `.env` files by checking that `".env.*"` is listed.
+* Check that `.gitignore` ignores `.env` files by checking that `.env.*` is listed.
 * Create a file in the home directory: `.env.development`, add the line `PGDATABASE=nc_news`
 * Create another file `.env.test`, add the line `PGDATABASE=nc_news_test`
 * Set up the database: `npm run setup-dbs`
