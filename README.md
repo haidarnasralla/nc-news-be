@@ -1,12 +1,27 @@
-# Northcoders News API
+# NC News Backend API
 
-You'll want to set up environment variables before you run this locally.
+Welcome to the backend of NC News - a social news platform based on Reddit which allows users to fetch, post and comment on articles as well as upvotes and downvotes.
 
-Follow the following steps!
+It's a demonstration of a RESTful backend API, built using Express, Node.js and PostgreSQL. You can access the hosted version [here](https://nc-news-be-v00f.onrender.com) where you will receive a JSON of all the available endpoints.
 
-1. Make sure you've run "npm install" in the command line to install dev dependencies. 
-2. Create 2 files in the home directory called ".env.development" and "env.test" for the project. Add the line "PGDATABASE=" followed by "nc_news" and "nc_news_test", respectively.
-3. Check the ".gitignore" file ignores .env files by checking that ".env.*" is there.
+### Minimum Requirements
+
+* Node v18.19.1
+* PostgreSQL 16.3
+
+### Running project locally
+
+* Clone the repository: `git clone https://github.com/haidarnasralla/nc-news-be`
+* Make sure you are inside the correct directory (`../nc-news-be`) and run `npm install` to install dependencies.
+* Check that `.gitignore` ignores `.env` files by checking that `".env.*"` is listed.
+* Create a file in the home directory: `.env.development`, add the line `PGDATABASE=nc_news`
+* Create another file `.env.test`, add the line `PGDATABASE=nc_news_test`
+* Set up the database: `npm run setup-dbs`
+* Seed the development database:  `npm run seed`
+* Run the tests suites: `npm test`
+* Start the server locally: `npm start`
+
+You will now be able to access the API [locally](localhost:9090)
 
 --- 
 
