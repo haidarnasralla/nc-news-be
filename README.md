@@ -2,7 +2,7 @@
 
 Welcome to the backend of NC News - a social news platform based on Reddit which allows users to fetch, post and comment on articles as well as upvotes and downvotes.
 
-It's a demonstration of a RESTful backend API, built using Express, Node.js and PostgreSQL. You can access the hosted version [here](https://nc-news-be-v00f.onrender.com) where you will receive a JSON of all the available endpoints.
+It's a demonstration of a RESTful backend API, built using Express, Node.js and PostgreSQL. You can access the hosted version [here](https://nc-news-be-v00f.onrender.com/api) where you will receive a JSON of all the available endpoints.
 
 ### Minimum Requirements
 
