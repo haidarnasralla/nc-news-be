@@ -13,6 +13,8 @@ const {
   getUsers
 } = require("./controllers/controllers");
 
+app.use(cors());
+
 app.use(express.json());
 
 app.get("/api/topics", getTopics);
@@ -24,8 +26,6 @@ app.post("/api/articles/:article_id/comments", postCommentByArticleId);
 app.patch("/api/articles/:article_id", updateArticleVotes);
 app.delete("/api/comments/:comment_id", deleteCommentByCommentId);
 app.get("/api/users", getUsers)
-
-app.use(cors());
 
 app.use((err, req, res, next) => {
   if (err.code === "22P02" || err.code === "23502") {
