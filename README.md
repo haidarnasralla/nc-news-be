@@ -21,7 +21,7 @@ It's a demonstration of a RESTful backend API, built using Express, Node.js and 
 * Run the tests suites: `npm test`
 * Start the server locally: `npm start`
 
-You will now be able to access the API [locally](http://localhost:9090)
+You will now be able to access the API [locally](http://localhost:9090).
 
 --- 
 
