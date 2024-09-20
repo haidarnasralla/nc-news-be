@@ -21,7 +21,7 @@ const corsOptions = {
   allowedHeaders: '*', // Allow all headers
 };
 
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
