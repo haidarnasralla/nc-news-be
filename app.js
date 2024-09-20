@@ -13,15 +13,7 @@ const {
   getUsers
 } = require("./controllers/controllers");
 
-// CORS CONFIG - FOR DEBUGGING
-
-const corsOptions = {
-  origin: '*', // Allow all origins
-  methods: '*', // Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
-  allowedHeaders: '*', // Allow all headers
-};
-
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.use(express.json());
 
