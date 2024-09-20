@@ -61,6 +61,15 @@ exports.getCommentByArticleId = (req, res, next) => {
 exports.postCommentByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const { author, body } = req.body;
+
+  // DEBUGGING START
+
+  console.log('Article ID:', article_id);
+  console.log('Author:', author);
+  console.log('Body:', body);
+
+  // DEBUGGING END
+
   return insertCommentByArticleId(article_id, author, body)
     .then((comment) => {
       res.status(201).send({ comment });
